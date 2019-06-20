@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import {formatDate} from '../utils/formatDate';
 
 class MailItem extends Component {
     render() {
@@ -11,7 +12,7 @@ class MailItem extends Component {
                     <div>{inboxEmail.sentFrom}</div>
                     <div>{inboxEmail.title}</div>
                     <div>{inboxEmail.message}</div>
-                    <div>{inboxEmail.date}</div>
+                    <div>{formatDate(inboxEmail.date)}</div>
                     <button onClick={() => this.deleteEmail(inboxEmail.id)}>Del</button>
                 </div>
             );
@@ -22,7 +23,7 @@ class MailItem extends Component {
                     <div>{spamEmail.sentFrom}</div>
                     <div>{spamEmail.title}</div>
                     <div>{spamEmail.message}</div>
-                    <div>{spamEmail.date}</div>
+                    <div>{formatDate(spamEmail.date)}</div>
                     <button onClick={() => this.deleteEmail(spamEmail.id)}>Del</button>
                 </div>
             );
@@ -33,7 +34,7 @@ class MailItem extends Component {
                     <div>{sentEmail.sentFrom}</div>
                     <div>{sentEmail.title}</div>
                     <div>{sentEmail.message}</div>
-                    <div>{sentEmail.date}</div>
+                    <div>{formatDate(sentEmail.date)}</div>
                     <button onClick={() => this.deleteEmail(sentEmail.id)}>Del</button>
                 </div>
             );

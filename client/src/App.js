@@ -1,6 +1,10 @@
 import React, {Component} from 'react';
 import Sidebar from "react-sidebar";
+import axios from 'axios';
 import {BrowserRouter as Router, Route, Link} from "react-router-dom";
+
+import NewEmailModal from './components/Layout/NewEmailModal';
+import EmailsNavbar from './components/Layout/EmailsNavbar';
 
 import Inbox from './components/Inbox'
 import Spam from './components/Spam'
@@ -10,15 +14,24 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            sidebarOpen: true
-        };
-    }
+            sidebarOpen: true,
+            emailCounter: []
+        }
+    };
+
+    componentDidMount = () => {
+        axios.get('http://localhost:4005/emails/counter')
+            .then(res => this.setState({emailCounter: res.data}))
+            .catch(err => console.log(err))
+    };
 
     onSetSidebarOpen = (open) => {
+        this.componentDidMount();
         this.setState({sidebarOpen: open});
     };
 
     render() {
+        const {emailCounter} = this.state;
         return (
             <Router>
                 <div className="App">
@@ -27,6 +40,11 @@ class App extends Component {
                         sidebar={
                             <div className="container">
                                 <h3>Sidebar content</h3>
+                                {emailCounter.map((counter) => (
+                                    <div key={counter.emailGroup}>
+                                        <div>{counter.counter}</div>
+                                    </div>
+                                ))}
                                 <div>
                                     <Link to="/" className="btn btn-sm btn-info mr-2">Inbox</Link>
                                 </div>
@@ -41,9 +59,11 @@ class App extends Component {
                         open={this.state.sidebarOpen}
                         onSetOpen={this.onSetSidebarOpen}
                         styles={{sidebar: {background: "white"}}}>
+                        <EmailsNavbar/>
                         <button onClick={() => this.onSetSidebarOpen(true)}>
                             Open sidebar
                         </button>
+                        <button>Send new Email</button>
                         <Route exact path={"/"} component={Inbox}/>
                         <Route exact path={"/spam"} component={Spam}/>
                         <Route exact path={"/sent"} component={Sent}/>

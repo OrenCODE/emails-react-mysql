@@ -15,6 +15,50 @@ let pool;
     });
 })();
 
+// @route   GET /emails/counter
+// @desc    email count by group
+// @access  public
+
+router.get('/counter', async (req, res) => {
+    try {
+        const [results] = await pool.execute(`SELECT COUNT(id) as counter, emailGroup FROM Email GROUP BY emailGroup`);
+        if (results.length) {
+            res.send(results)
+        } else {
+            res
+                .status(404)
+                .send('there are no emails in the database')
+        }
+    } catch (e) {
+        res
+            .status(500)
+            .send('something has gone wrong!')
+    }
+});
+
+// @route   GET /emails/date
+// @desc    search email by date
+// @access  public
+
+router.get('/date/:pickedDate', async (req, res) => {
+    const {pickedDate} = req.params;
+    try {
+        const [results] = await pool.execute(`SELECT * FROM Email WHERE date = ?`, [pickedDate]);
+        if (results.length) {
+            res.send(results)
+        } else {
+            res
+                .status(404)
+                .send('there are no emails in the database')
+        }
+    } catch (e) {
+        res
+            .status(500)
+            .send('something has gone wrong!')
+    }
+});
+
+
 // @route   GET /emails/
 // @desc    get all mails
 // @access  public
