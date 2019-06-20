@@ -15,6 +15,7 @@ class App extends Component {
         super(props);
         this.state = {
             sidebarOpen: true,
+            show: false,
             emailCounter: []
         }
     };
@@ -30,8 +31,21 @@ class App extends Component {
         this.setState({sidebarOpen: open});
     };
 
+    showModal = () => {
+        this.setState({show: true})
+    };
+
+    closeModal = () => {
+        this.setState({show: false})
+    };
+
+    sendNewEmail = (e) => {
+        e.preventDefault();
+        console.log('check')
+    };
+
     render() {
-        const {emailCounter} = this.state;
+        const {emailCounter, show} = this.state;
         return (
             <Router>
                 <div className="App">
@@ -63,12 +77,13 @@ class App extends Component {
                         <button onClick={() => this.onSetSidebarOpen(true)}>
                             Open sidebar
                         </button>
-                        <button>Send new Email</button>
+                        <button onClick={this.showModal}>Send new Email</button>
                         <Route exact path={"/"} component={Inbox}/>
                         <Route exact path={"/spam"} component={Spam}/>
                         <Route exact path={"/sent"} component={Sent}/>
                     </Sidebar>
                 </div>
+                <NewEmailModal modalStatus={show} closeModal={this.closeModal} sendNewEmail={this.sendNewEmail}/>
             </Router>
         );
     }

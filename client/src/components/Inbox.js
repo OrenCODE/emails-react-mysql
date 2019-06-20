@@ -9,15 +9,16 @@ class Inbox extends Component {
 
     state = {
         inbox: [],
-        startDate: new Date(),
+        startDate: null,
+        searchStatus: true,
         errors: null
     };
 
-    componentDidMount() {
+    componentDidMount = () => {
         axios.get(`http://localhost:4005/emails/inbox`)
-            .then(res => this.setState({inbox: res.data}))
+            .then(res => this.setState({inbox: res.data, searchStatus: true, startDate: null}))
             .catch(err => this.setState({errors: err.response.data}))
-    }
+    };
 
     onDelete = (id) => {
         const {inbox} = this.state;
@@ -31,22 +32,30 @@ class Inbox extends Component {
         this.setState({startDate: date})
     };
 
+    //ADD GROUP TO SERVER QUERY AND AXIOS REQUEST//
+
     searchByDate = (date) => {
         const pickedDate = formatDate(date);
         axios.get(`http://localhost:4005/emails/date/${pickedDate}`)
-            .then(res => this.setState({inbox: res.data}))
+            .then(res => this.setState({
+                inbox: res.data,
+                searchStatus: false
+            }))
             .catch(err => console.log(err));
     };
 
     render() {
-        const {inbox, startDate} = this.state;
+        const {inbox, startDate, searchStatus} = this.state;
         return (
             <div className="container col-7">
                 <DatePicker
                     selected={this.state.startDate}
                     onChange={this.handleChange}
                 />
-                <button onClick={() => this.searchByDate(startDate)}>Search</button>
+                {searchStatus ?
+                    <button onClick={() => this.searchByDate(startDate)}>Search</button> :
+                    <button onClick={() => this.componentDidMount()}>Return</button>
+                }
                 <div className="card">
                     <ul className="list-group list-group-flush">
                         {inbox.map((inboxEmail) => (
