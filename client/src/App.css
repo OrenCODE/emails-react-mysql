@@ -1,3 +1,7 @@
 .sidebarItem{
     margin-bottom: 10px;
 }
+
+.search-area{
+    float: right;
+}

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Navbar, Nav, FormControl, Button, Form} from 'react-bootstrap';
+import {Navbar, Nav} from 'react-bootstrap';
 
 class EmailsNavbar extends Component {
     render() {

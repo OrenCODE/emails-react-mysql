@@ -37,19 +37,19 @@ router.get('/counter', async (req, res) => {
 });
 
 // @route   GET /emails/date
-// @desc    search email by date
+// @desc    search email by date and group
 // @access  public
 
-router.get('/date/:pickedDate', async (req, res) => {
-    const {pickedDate} = req.params;
+router.get('/search?date=?&emailGroup=?', async (req, res) => {
+    const {pickedDate, emailGroup} = req.query;
     try {
-        const [results] = await pool.execute(`SELECT * FROM Email WHERE date = ?`, [pickedDate]);
+        const [results] = await pool.execute(`SELECT * FROM Email WHERE date >= ? AND emailGroup =?`, [pickedDate, emailGroup]);
         if (results.length) {
             res.send(results)
         } else {
             res
                 .status(404)
-                .send('there are no emails in the database')
+                .send('could not find emails on this date')
         }
     } catch (e) {
         res
@@ -108,18 +108,19 @@ router.get('/:emailGroup', async (req, res) => {
 // @access  public
 
 router.post('/', async (req, res) => {
-    const {sentFrom, title, message, date} = req.body;
+    const {sentFrom, title, message, date, emailGroup} = req.body;
     if (!title) {
         res
             .status(400)
             .send('expected title in request');
     }
-    const [results] = await pool.execute(`INSERT INTO Email (sentFrom,title,message,date) 
+    const [results] = await pool.execute(`INSERT INTO Email (sentFrom,title,message,date,emailGroup) 
     VALUES (
     '${sentFrom}',
     '${title}',
     '${message}',
-    '${date}'
+    '${date}',
+    '${emailGroup}'
     )`);
     if (results.insertId) {
         res.send({id: results.insertId, success: true});
