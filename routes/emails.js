@@ -40,10 +40,10 @@ router.get('/counter', async (req, res) => {
 // @desc    search email by date and group
 // @access  public
 
-router.get('/search?date=?&emailGroup=?', async (req, res) => {
-    const {pickedDate, emailGroup} = req.query;
+router.get('/date/:pickedDate', async (req, res) => {
+    const {pickedDate} = req.params;
     try {
-        const [results] = await pool.execute(`SELECT * FROM Email WHERE date >= ? AND emailGroup =?`, [pickedDate, emailGroup]);
+        const [results] = await pool.execute(`SELECT * FROM Email WHERE date = ?`, [pickedDate]);
         if (results.length) {
             res.send(results)
         } else {

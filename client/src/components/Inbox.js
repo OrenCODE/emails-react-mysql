@@ -34,10 +34,9 @@ class Inbox extends Component {
 
     //ADD GROUP TO SERVER QUERY AND AXIOS REQUEST//
 
-    searchByDate = (pickedDate) => {
-        const date = formatDate(pickedDate);
-        const emailGroup = 'inbox';
-        axios.get(`http://localhost:4005/emails/search?${date}&${emailGroup}`)
+    searchByDate = (date) => {
+        const pickedDate = formatDate(date);
+        axios.get(`http://localhost:4005/emails/date/${pickedDate}`)
             .then(res => this.setState({
                 inbox: res.data,
                 searchStatus: false
